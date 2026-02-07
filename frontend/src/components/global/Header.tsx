@@ -1,20 +1,24 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import courseHandler from "../../handlers/courseHandler";
 
 const Header = () => {
-  const navItems = ["NHL", "NBA", "NFL", "MLB", "UFC", "Soccer", "More Sports"];
 
+  const navItems = courseHandler.getAll();
+ 
   const fontStack = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-
+  const navigate = useNavigate();
+  
   return (
     <header
       style={{
         position: "fixed",
         top: 0,
         width: "100%",
-        backgroundColor: "#000000",
-        borderBottom: "1px solid #2a2a2a",
+        backgroundColor: "var(--bg-primary)",
+        borderBottom: "1px solid var(--text-secondary)",
         zIndex: 1000,
-        fontFamily: fontStack
+        fontFamily: fontStack,
       }}
     >
       <div
@@ -25,90 +29,47 @@ const Header = () => {
           display: "flex",
           alignItems: "center",
           height: "64px",
-          justifyContent: "space-between"
+          justifyContent: "space-between",
         }}
       >
-        {/* Left side */}
         <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
-          {/* Logo */}
           <div
             style={{
               fontSize: "24px",
               fontWeight: 700,
-              color: "#ffffff",
+              background: "var(--gradient-text)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
               letterSpacing: "-0.5px",
-              cursor: "pointer"
+              cursor: "pointer",
             }}
+            onClick={() => navigate('/')}
           >
-            Sports Insight
+            CS-Insight
           </div>
 
-          {/* Navigation */}
+          {/* Header Icons */}
           <nav style={{ display: "flex", gap: "24px", alignItems: "center" }}>
             {navItems.map((item) => (
-              <a
-                key={item}
-                href="#"
+              <Link
+                key={item.title}
+                to={item.link}
                 style={{
-                  color: "#b3b3b3",
+                  color: "var(--text-secondary)",
                   fontSize: "14px",
                   fontWeight: 600,
                   textDecoration: "none",
                   letterSpacing: "0.2px",
-                  transition: "color 0.2s"
+                  transition: "color 0.2s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#b3b3b3")}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--accent-primary)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-secondary)")}
               >
-                {item}
-              </a>
+                {item.title}
+              </Link>
             ))}
           </nav>
-        </div>
-
-        {/* Right side actions */}
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <button
-            style={{
-              backgroundColor: "transparent",
-              color: "#b3b3b3",
-              border: "1px solid #3a3a3a",
-              borderRadius: "4px",
-              padding: "8px 16px",
-              fontSize: "14px",
-              fontWeight: 600,
-              cursor: "pointer",
-              transition: "background-color 0.2s, border-color 0.2s"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#1a1a1a";
-              e.currentTarget.style.borderColor = "#4a4a4a";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.borderColor = "#3a3a3a";
-            }}
-          >
-            Log In
-          </button>
-
-          <button
-            style={{
-              backgroundColor: "#ffffff",
-              color: "#000000",
-              border: "none",
-              borderRadius: "4px",
-              padding: "8px 16px",
-              fontSize: "14px",
-              fontWeight: 700,
-              cursor: "pointer",
-              transition: "background-color 0.2s"
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#e6e6e6")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
-          >
-            Subscribe
-          </button>
         </div>
       </div>
     </header>

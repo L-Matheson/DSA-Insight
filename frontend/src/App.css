@@ -13,22 +13,33 @@
 
 .app-layout {
   display: flex;
+    background-color: var(--bg-primary);
+
 }
 
 .header-container {
-  background-color: #1a1a1a; /* Darker, more like ESPN */
+  background-color: #1a1a1a; 
   position: fixed;
   top: 0;
   width: 100%;
-  height: 56px; /* Standard ESPN-style header height */
+  height: 56px; 
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.main-content {
+.content-outline {
   flex: 1;
-  min-width: 100vw;
-  padding-top: 56px; /* Match header height */
+  width: 100vw;
+  padding-top: 64px; 
+  min-height: calc(100vh - 64px);
+  overflow-y: auto;  
+  overflow-x: hidden;
+}
+
+.content{
+  max-width: 1125px;
+  margin: 0 auto;
+  padding: 2em;
 }
 
 .logo {
