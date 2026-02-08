@@ -1,76 +1,79 @@
 import React from "react";
-import type { Unit } from "../interfaces/course";
+import type { Chapter } from "../interfaces/course";
 
-
+import ChapterOneHome from "../pages/algorithmDesign/chapterone/ChapterOneHome";
+import DefaultChapterHome from "../pages/DefaultChapterHome";
 export class AlgorithmDesignHandler {
-    private units: Unit[] = [
+    private chapters: Chapter[] = [
     {
-        title: "Unit 1: Introduction to Algorithm Design",
+        title: "Chapter 1: Algorithms: Efficiency, Analysis, and Order",
         description: "Foundations of algorithmic thinking, correctness, and basic analysis.",
         subTopics: [
-            "Problem solving & algorithmic paradigms",
+            "Problem solving & algorithmic problems",
             "Proofs of correctness (invariants, induction)",
             "Asymptotic notation: O, Θ, Ω",
         ],
+        homepage: ChapterOneHome,
+
     },
     {
-        title: "Unit 2: Divide and Conquer",
+        title: "Chapter 2: Divide and Conquer",
         description: "Divide problems into subproblems, combine solutions, and analyze recurrence relations.",
         subTopics: [
             "Merge sort and quicksort",
             "Master theorem and recurrence solving",
             "Selection algorithms",
         ],
+        homepage: DefaultChapterHome,
     },
     {
-        title: "Unit 3: Dynamic Programming",
+        title: "Chapter 3: Dynamic Programming",
         description: "Techniques for optimal substructure and overlapping subproblems using memoization and tabulation.",
         subTopics: [
             "Knapsack, Longest Common Subsequence",
             "Optimal substructure & memoization",
             "State design and complexity trade-offs",
         ],
+        homepage: DefaultChapterHome,
     },
     {
-        title: "Unit 4: Greedy Algorithms",
+        title: "Chapter 4: Greedy Algorithms",
         description: "Designing greedy strategies and proving their correctness via exchange arguments and matroids.",
         subTopics: [
             "Interval scheduling",
             "Huffman coding and optimal prefix codes",
             "Minimum spanning trees (Kruskal, Prim)",
         ],
+        homepage: DefaultChapterHome,
     },
     {
-        title: "Unit 5: Graph Algorithms",
+        title: "Chapter 5: Backtracking",
         description: "Classic graph traversals and shortest-path / flow algorithms with applications and analysis.",
         subTopics: [
             "BFS & DFS and applications",
             "Dijkstra, Bellman-Ford, Floyd-Warshall",
             "Max-flow (Ford–Fulkerson / Edmonds–Karp) basics",
         ],
+        homepage: DefaultChapterHome,
     },
     {
-        title: "Unit 6: Complexity Analysis",
+        title: "Chapter 6: Branch and Bound",
         description: "Deeper study of runtime/space complexity, NP, reductions, and approximation algorithms.",
         subTopics: [
             "Amortized analysis and probabilistic analysis",
             "NP, NP-completeness, and reductions",
             "Approximation algorithms and intractability",
         ],
+        homepage: DefaultChapterHome,
     },
     ];
 
-    getAllUnits(): Unit[] {
-        return this.units.map((u) => ({ ...u, subTopics: u.subTopics ? [...u.subTopics] : [] }));
+    getAllChapters(): Chapter[] {
+        return this.chapters.map((u) => ({ ...u, subTopics: u.subTopics ? [...u.subTopics] : [] }));
     }
 
-    findByTitle(title: string): Unit | undefined {
-        return this.units.find((unit) => unit.title.toLowerCase() === title.toLowerCase());
-    }
-
-    filterBySubTopic(query: string): Unit[] {
-        const q = query.toLowerCase();
-        return this.units.filter((u) => (u.subTopics || []).some((s) => s.toLowerCase().includes(q)));
+    findByTitle(title: string): Chapter | undefined {
+        return this.chapters.find((unit) => unit.title.toLowerCase() === title.toLowerCase());
     }
 
 }

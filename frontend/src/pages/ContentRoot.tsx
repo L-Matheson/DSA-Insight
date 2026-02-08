@@ -13,7 +13,6 @@ const ContentRoot = ({ title }: { title: string }) => {
         <PageTitle title={course.title} />
         <PageDesc description={course.description} />
         <course.homepage />
-        {/* Loops through gathered questions and chapters from the backend, depending where the questions are found */}
       </div>
     );
   }

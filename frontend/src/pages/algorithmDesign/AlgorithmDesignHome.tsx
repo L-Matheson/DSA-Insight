@@ -1,48 +1,26 @@
 import React from "react";
-import UnitCard from "../../components/UnitCard";
+import ChapterCard from "../../components/ChapterCard";
 import algorithmDesignHandler from "../../handlers/algorithmDesignHandler";
 
 const AlgorithmDesignHome = () => {
 
-  const units = algorithmDesignHandler.getAllUnits();
+  const chapters = algorithmDesignHandler.getAllChapters();
 
   return (
     <div style={{ width: "100%" }}>
-      <div style={{ marginBottom: "40px" }}>
-        <h2 style={{display: "flex", textAlign: "left"}}>1. Covered Topics</h2>
-        <ul style={{ lineHeight: "1.8", textAlign: "left", fontSize: "1.1em" }}>
-          <li>
-            Objective 1: e.g., Analyze algorithm complexity using Big-O, Big-Θ,
-            and Big-Ω notation
-          </li>
-          <li>
-            Objective 2: e.g., Design and implement divide-and-conquer
-            algorithms
-          </li>
-          <li>
-            Objective 3: e.g., Apply dynamic programming to optimization
-            problems
-          </li>
-          <li>Objective 4: e.g., Understand and apply greedy algorithms</li>
-          <li>
-            Objective 5: e.g., Analyze graph algorithms and their applications
-          </li>
-          <li>
-            Objective 6: e.g., Prove algorithm correctness and analyze runtime
-          </li>
-        </ul>
-      </div>
+  
 
       {/* Course Topics */}
       <div style={{ marginBottom: "40px" }}>
-        <h2 style={{display: "flex", textAlign: "left"}} >2. Course Topics</h2>
+        <h2 style={{display: "flex", textAlign: "left"}} >1. Course Topics</h2>
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-            {units.map((unit, index) => (
-              <UnitCard
+            {chapters.map((chapter, index) => (
+              <ChapterCard
                 key={index}
-                title={unit.title}
-                topics={unit.subTopics}
+                title={chapter.title}
+                topics={chapter.subTopics}
+                courseTitle={"Algorithm Design"}
               />
             ))}
           </div>
@@ -52,7 +30,7 @@ const AlgorithmDesignHome = () => {
       <div
         style={{ marginBottom: "40px", padding: "20px", borderRadius: "8px", textAlign: "left" }}
       >
-        <h2>3. Algorithm Complexity Reference</h2>
+        <h2>2. Algorithm Complexity Reference</h2>
         <div
           style={{
             display: "grid",
@@ -104,7 +82,7 @@ const AlgorithmDesignHome = () => {
 
       {/* Key Algorithms */}
       <div style={{ marginBottom: "40px" }}>
-        <h2>4. Key Algorithms Covered</h2>
+        <h2>3. Key Algorithms Covered</h2>
         <div
           style={{
             display: "grid",
@@ -176,7 +154,7 @@ const AlgorithmDesignHome = () => {
 
       {/* Practice Resources */}
       <div style={{ marginBottom: "40px" }}>
-        <h2>5. Practice & Resources</h2>
+        <h2>4. Practice & Resources</h2>
         <div
           style={{
             display: "grid",

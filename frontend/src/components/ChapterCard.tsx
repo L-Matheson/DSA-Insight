@@ -1,4 +1,9 @@
-const PageTitle = ({ title, topics }: { title: string; topics: string[] }) => {
+import { useNavigate } from "react-router-dom";
+
+const ChapterCard = ({ title, topics, courseTitle }: { title: string; topics: string[]; courseTitle: string}) => {
+    const navigate = useNavigate();
+
+
   return (
     <div
       style={{
@@ -23,6 +28,9 @@ const PageTitle = ({ title, topics }: { title: string; topics: string[] }) => {
         e.currentTarget.style.borderColor = "var(--border-subtle)";
         e.currentTarget.style.boxShadow = "none";
       }}
+      onClick={() => {
+        navigate("/" + courseTitle + "/" + title);
+      }}
     >
       <h3>{title}</h3>
       <ul style={{ textAlign: "left" }}>
@@ -37,4 +45,4 @@ const PageTitle = ({ title, topics }: { title: string; topics: string[] }) => {
   );
 };
 
-export default PageTitle;
+export default ChapterCard;

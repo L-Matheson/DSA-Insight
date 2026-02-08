@@ -1,5 +1,5 @@
 import React from "react";
-import UnitCard from "../../components/UnitCard";
+import UnitCard from "../../components/ChapterCard";
 
 const SystemsProgrammingHome = () => {
   const units = [

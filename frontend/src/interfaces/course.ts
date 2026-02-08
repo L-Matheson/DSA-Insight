@@ -6,14 +6,21 @@ interface Course {
   icon: string;
   topics: string[];
   link: string;
-  homepage:  React.ComponentType; // Adjusted to accept various React node types
+  homepage:  React.ComponentType; 
 }
 
-interface Unit {
+interface Chapter {
   title: string;
   description: string;
   subTopics: string[];
-  content?: React.ComponentType; // Accepts any valid React node (string, JSX, etc.)
+  homepage: React.ComponentType; 
+  questions?: Record<string, Question>;
 }
 
-export type { Course, Unit };
+interface Question{
+  title: string;
+  description: string;
+  solution: React.ComponentType;
+}
+
+export type { Course, Chapter, Question };
