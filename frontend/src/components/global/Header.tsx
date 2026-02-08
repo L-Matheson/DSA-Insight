@@ -23,7 +23,7 @@ const Header = () => {
     >
       <div
         style={{
-          maxWidth: "1440px",
+          maxWidth: "1125px",
           margin: "0 auto",
           padding: "0 24px",
           display: "flex",

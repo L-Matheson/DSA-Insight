@@ -94,6 +94,10 @@
 
 /* Base Styles */
 
+html, body {
+  overflow-x: hidden;          
+}
+
 a {
   font-weight: 500;
   color: var(--accent-primary);
@@ -112,6 +116,7 @@ body {
   min-height: 100vh;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  overflow-x: hidden;
 }
 
 h1 {

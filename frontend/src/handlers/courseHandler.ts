@@ -1,13 +1,18 @@
-import type { Course } from "../interfaces/page";
-
+import type { Course } from "../interfaces/course";
+import React from "react";
+import AlgorithmDesignHome from "../pages/algorithmDesign/AlgorithmDesignHome";
+import DataScienceHome from "../pages/dataScience/DataScienceHome";
+import DataStructuresHome from "../pages/dataStructures/DataStructuresHome";
+import SystemsProgrammingHome from "../pages/systemsProgramming/SystemsProgrammingHome";
 const allCourses: Course[] = [
   {
     title: "Data Science",
     description:
       "Explore statistical analysis, machine learning, data visualization, and the tools that transform raw data into actionable insights.",
     icon: "📊",
-    topics: ["Machine Learning", "Statistics", "Data Visualization", "Python/R"],
+    topics: ["Machine Learning", "Statistics", "Data Visualization", "Python"],
     link: "/data-science",
+    homepage: DataScienceHome 
   },
   {
     title: "Data Structures",
@@ -16,6 +21,7 @@ const allCourses: Course[] = [
     icon: "🗂️",
     topics: ["Trees & Graphs", "Hash Tables", "Linked Lists", "Stacks & Queues"],
     link: "/data-structures",
+    homepage: DataStructuresHome
   },
   {
     title: "Algorithm Design",
@@ -24,15 +30,17 @@ const allCourses: Course[] = [
     icon: "⚡",
     topics: ["Dynamic Programming", "Greedy Algorithms", "Graph Algorithms", "Complexity Analysis"],
     link: "/algorithm-design",
+    homepage: AlgorithmDesignHome
   },
   {
     title: "Systems Programming",
     description:
       "Learn low-level programming, memory management, concurrency, operating system concepts, and how software interacts with hardware.",
     icon: "⚙️",
-    topics: ["C/C++", "Memory Management", "Concurrency", "OS Concepts"],
+    topics: ["C", "Memory Management", "Concurrency", "OS Concepts", "Linux"],
     link: "/systems-programming",
-  },
+    homepage: SystemsProgrammingHome 
+  }
 ];
 
 export class CourseHandler {

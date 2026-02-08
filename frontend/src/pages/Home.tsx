@@ -14,14 +14,9 @@ const Home = () => {
 
     return (
         <div style={{
-            maxWidth: "100%",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "var(--bg-primary)",
-            minHeight: "100vh",
-            color: "var(--text-primary)",
             paddingTop: "64px",
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
         }}>
@@ -43,7 +38,7 @@ const Home = () => {
                     fontSize: "20px",
                     color: "var(--text-secondary)",
                     maxWidth: "800px",
-                    margin: "0 auto 40px",
+                    margin: "0 auto",
                     lineHeight: "1.6"
                 }}>
                     A comprehensive learning hub for Data Science, Data Structures, Algorithm Design, and Systems Programming. 
@@ -82,8 +77,6 @@ const Home = () => {
 
             {/* Courses Grid */}
             <section style={{
-                maxWidth: "1200px",
-
                 padding: "60px 24px"
             }}>
                 <h2 style={{
@@ -97,7 +90,7 @@ const Home = () => {
                 </h2>
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
                     gap: "24px"
                 }}>
                     {courses.map((course, index) => (
@@ -159,7 +152,6 @@ const Home = () => {
             {/* About Section */}
             <section style={{
                 maxWidth: "800px",
-                margin: "0 auto",
                 padding: "60px 24px 100px",
                 textAlign: "center"
             }}>
