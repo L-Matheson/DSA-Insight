@@ -17,13 +17,10 @@ An application that looks to visualize and explain common, advanced computer sci
 
 ## Usage
 Run the project:
-Example: cd frontend, then run npm run dev to load the frontend
-
+1. cd frontend
+2. Run `npm run dev` to load the frontend
 
 ## Project Structure: To be updated
-src/        Source code
-docs/       Documentation
-README.txt  Project overview
 
 ## Development
 * Implement custom note taking features
