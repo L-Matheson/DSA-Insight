@@ -10,7 +10,6 @@ An application that looks to visualize and explain common, advanced computer sci
 ## Technologies Used
 * Language(s): Python, TypeScript
 * Frameworks / Libraries: React, FastAPI
-* Tools:
 
 ## Installation
 1. Clone the repository:
