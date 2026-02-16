@@ -1,10 +1,11 @@
 import React from "react";
 import UnitCard from "../../components/ChapterCard";
+import { Link } from "react-router-dom";
 
 const SystemsProgrammingHome = () => {
   const units = [
     {
-      title: "Unit 1: C Programming Fundamentals",
+      courseTitle: "Unit 1: C Programming Fundamentals",
       subTopics: [
         "C syntax, types, and control structures",
         "Pointers and pointer arithmetic",
@@ -12,7 +13,7 @@ const SystemsProgrammingHome = () => {
       ],
     },
     {
-      title: "Unit 2: Memory Management",
+      courseTitle: "Unit 2: Memory Management",
       subTopics: [
         "Stack vs heap memory allocation",
         "malloc, calloc, realloc, and free",
@@ -20,7 +21,7 @@ const SystemsProgrammingHome = () => {
       ],
     },
     {
-      title: "Unit 3: Processes & System Calls",
+      courseTitle: "Unit 3: Processes & System Calls",
       subTopics: [
         "Process creation and lifecycle (fork, exec)",
         "System call interface and error handling",
@@ -28,7 +29,7 @@ const SystemsProgrammingHome = () => {
       ],
     },
     {
-      title: "Unit 4: Concurrency & Threads",
+      courseTitle: "Unit 4: Concurrency & Threads",
       subTopics: [
         "POSIX threads (pthreads) and thread management",
         "Race conditions and synchronization primitives",
@@ -36,7 +37,7 @@ const SystemsProgrammingHome = () => {
       ],
     },
     {
-      title: "Unit 5: File Systems & I/O",
+      courseTitle: "Unit 5: File Systems & I/O",
       subTopics: [
         "File descriptors and system I/O operations",
         "File system structure and organization",
@@ -44,7 +45,7 @@ const SystemsProgrammingHome = () => {
       ],
     },
     {
-      title: "Unit 6: Operating System Concepts",
+      courseTitle: "Unit 6: Operating System Concepts",
       subTopics: [
         "Scheduling algorithms and context switching",
         "Virtual memory and paging",
@@ -72,7 +73,7 @@ const SystemsProgrammingHome = () => {
         <h2 style={{ display: "flex", textAlign: "left" }}>2. Course Topics</h2>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
           {units.map((unit, index) => (
-            <UnitCard key={index} title={unit.title} topics={unit.subTopics} />
+            <UnitCard key={index} title={unit.courseTitle} courseTitle={"Systems Engineering"} topics={unit.subTopics} />
           ))}
         </div>
       </div>
@@ -182,10 +183,46 @@ const SystemsProgrammingHome = () => {
           <div style={{ padding: "20px", borderRadius: "8px" }}>
             <h3>Hands-On Projects</h3>
             <ul>
-              <li>Custom shell implementation</li>
-              <li>Memory allocator (malloc clone)</li>
-              <li>Multi-threaded server</li>
-              <li>File system utilities</li>
+              <li>
+                <Link 
+                  to="/project/custom-shell-implementation"
+                  style={{ color: "#0066cc", textDecoration: "none", cursor: "pointer" }}
+                  onMouseOver={(e) => e.currentTarget.style.textDecoration = "underline"}
+                  onMouseOut={(e) => e.currentTarget.style.textDecoration = "none"}
+                >
+                  Custom shell implementation
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/project/memory-allocator"
+                  style={{ color: "#0066cc", textDecoration: "none", cursor: "pointer" }}
+                  onMouseOver={(e) => e.currentTarget.style.textDecoration = "underline"}
+                  onMouseOut={(e) => e.currentTarget.style.textDecoration = "none"}
+                >
+                  Memory allocator (malloc clone)
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/project/multi-threaded-server"
+                  style={{ color: "#0066cc", textDecoration: "none", cursor: "pointer" }}
+                  onMouseOver={(e) => e.currentTarget.style.textDecoration = "underline"}
+                  onMouseOut={(e) => e.currentTarget.style.textDecoration = "none"}
+                >
+                  Multi-threaded server
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/project/file-system-utilities"
+                  style={{ color: "#0066cc", textDecoration: "none", cursor: "pointer" }}
+                  onMouseOver={(e) => e.currentTarget.style.textDecoration = "underline"}
+                  onMouseOut={(e) => e.currentTarget.style.textDecoration = "none"}
+                >
+                  File system utilities
+                </Link>
+              </li>
             </ul>
           </div>
 

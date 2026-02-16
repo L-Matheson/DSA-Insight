@@ -10,6 +10,7 @@ import NotFoundPage from "./pages/NotFoundPage.tsx";
 import ContentRoot from "./pages/ContentRoot.tsx";
 import ProblemRoot from "./pages/ProblemRoot.tsx";
 import ChapterRoot from "./pages/ChapterRoot.tsx";
+import ProjectRoot from "./pages/ProjectRoot.tsx";
 
 const router = createBrowserRouter([
   {
@@ -44,9 +45,13 @@ const router = createBrowserRouter([
         path: ":course-title/:chapter/:question",
         element: <ProblemRoot />,
       },
-            {
+      {
         path: ":course-title/:chapter/",
         element: <ChapterRoot />,
+      },
+      {
+        path: "project/:project-name",
+        element: <ProjectRoot />,
       },
     ],
   },
