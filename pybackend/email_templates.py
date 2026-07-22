@@ -1,152 +1,102 @@
 """
-Query a Metabase saved question ("Card") by ID, filtered with MBQL.
+routes/questions.py
 
-Metabase lets you use any saved question as a virtual table for a new MBQL
-query by setting `"source-table": "card__<id>"`. This posts that query to
-/api/dataset, so you get the question's results with your own filter
-applied on top.
+Route for fetching data from a Metabase question (card), optionally
+filtered by an MBQL filter clause generated on the frontend.
 
-IMPORTANT for aggregated questions (e.g. "Sum of Quantity" grouped by
-"Created At: Month"): the result columns are computed, not raw table
-fields. A filter clause referencing them MUST use the exact technical
-`name` from the card's result_metadata plus a matching `base-type` --
-guessing the display name, or using a numeric field id, will 400. Run
-print_card_columns() first to see the real names.
+- No filter provided -> returns the question's full result set unmodified.
+- Filter provided     -> runs the question as a virtual table (card__<id>)
+                         with the filter applied server-side via /api/dataset.
 
-Auth (env vars):
-    METABASE_URL        e.g. https://metabase.example.com
-    METABASE_API_KEY    OR METABASE_SESSION (X-Metabase-Session token)
+Database and table are never accepted from the client - they're always
+resolved from the card_id in the URL. MBQL clause shape is validated on
+the frontend before it reaches this route.
 """
 
-from __future__ import annotations
-
-import os
-from typing import Any
-
 import httpx
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from typing import Any, Optional
+
+router = APIRouter(prefix="/api/questions", tags=["questions"])
+
+METABASE_URL = "https://your-metabase-instance.com"
+METABASE_API_KEY = "your-api-key"  # server-side only, never sent to frontend
+
+HEADERS = {"x-api-key": METABASE_API_KEY, "Content-Type": "application/json"}
 
 
-def _headers() -> dict[str, str]:
-    if api_key := os.environ.get("METABASE_API_KEY"):
-        return {"x-api-key": api_key}
-    if session := os.environ.get("METABASE_SESSION"):
-        return {"X-Metabase-Session": session}
-    raise RuntimeError("Set METABASE_API_KEY or METABASE_SESSION")
+class FilterRequest(BaseModel):
+    filter: Optional[list[Any]] = None
 
 
-def _base_url() -> str:
-    return os.environ["METABASE_URL"].rstrip("/")
+# ---- Metabase HTTP helpers ----
+
+async def mb_get(path: str) -> dict:
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(f"{METABASE_URL}{path}", headers=HEADERS)
+        resp.raise_for_status()
+        return resp.json()
 
 
-def print_card_columns(card_id: int) -> None:
-    """Debug helper: print the real name / display_name / base_type for each
-    column in a card's results, and its database_id."""
-    resp = httpx.get(f"{_base_url()}/api/card/{card_id}", headers=_headers(), timeout=30.0)
-    if resp.status_code != 200:
-        print(f"GET /api/card/{card_id} -> {resp.status_code}: {resp.text}")
-        return
-    card = resp.json()
-    print(f"Card: {card.get('name')!r}  database_id={card.get('database_id')}")
-    for col in card.get("result_metadata") or []:
-        print(f"  name={col.get('name')!r}  display_name={col.get('display_name')!r}  "
-              f"base_type={col.get('base_type')!r}")
+async def mb_post(path: str, body: dict | None = None) -> dict:
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(f"{METABASE_URL}{path}", headers=HEADERS, json=body or {})
+        resp.raise_for_status()
+        return resp.json()
 
 
-def query_trend_card(
-    card_id: int,
-    database_id: int,
-    created_at_month: str | None = None,
-    quantity_op: str | None = None,
-    quantity_value: int | None = None,
-) -> dict[str, Any]:
-    """
-    One route for the "Created At: Month" / "Sum of Quantity" trend card.
+# ---- Field validation (still needed - protects against filters that ----
+# ---- reference fields outside the question, regardless of frontend) ----
 
-    Filters are optional and independent -- pass either, both, or neither.
-    If both are given they're combined with AND.
-
-    created_at_month: a month value as "YYYY-MM-01", e.g. "2024-05-01".
-                       Matches the CREATED_AT column, which the card has
-                       already bucketed to month -- do NOT add a
-                       temporal-unit here, that would double-bucket it.
-
-    quantity_op:       one of "=", "!=", ">", ">=", "<", "<=", "between"
-    quantity_value:    the number to compare "sum" (Sum of Quantity) against.
-                        For "between", pass a (low, high) tuple instead.
-    """
-    clauses: list[Any] = []
-
-    if created_at_month is not None:
-        clauses.append(
-            ["=", ["field", "CREATED_AT", {"base-type": "type/DateTime"}], created_at_month]
-        )
-
-    if quantity_op is not None:
-        sum_field = ["field", "sum", {"base-type": "type/BigInteger"}]
-        if quantity_op == "between":
-            low, high = quantity_value  # type: ignore[misc]
-            clauses.append(["between", sum_field, low, high])
-        else:
-            clauses.append([quantity_op, sum_field, quantity_value])
-
-    if not clauses:
-        mbql_filter = None
-    elif len(clauses) == 1:
-        mbql_filter = clauses[0]
+def extract_field_ids(clause: Any, ids: list[int] | None = None) -> list[int]:
+    if ids is None:
+        ids = []
+    if not isinstance(clause, list):
+        return ids
+    if clause and clause[0] == "field" and isinstance(clause[1], int):
+        ids.append(clause[1])
     else:
-        mbql_filter = ["and", *clauses]
-
-    return query_card(card_id, database_id, mbql_filter)
-
-
-def query_card(card_id: int, database_id: int, mbql_filter: list[Any] | None) -> dict[str, Any]:
-    """
-    Lower-level route: run a saved question, optionally filtered with a raw
-    MBQL filter clause. query_trend_card() builds that clause for you for
-    this specific card; call this directly if you need a different clause.
-
-    card_id:      ID of the saved question to filter
-    database_id:  ID of the database the card queries against
-                  (see print_card_columns, or GET /api/card/:id -> "database_id")
-    mbql_filter:  a raw MBQL filter clause, or None to run the card unfiltered.
-    """
-    query: dict[str, Any] = {"source-table": f"card__{card_id}"}
-    if mbql_filter is not None:
-        query["filter"] = mbql_filter
-
-    payload = {"type": "query", "database": database_id, "query": query}
-
-    resp = httpx.post(
-        f"{_base_url()}/api/dataset",
-        json=payload,
-        headers=_headers(),
-        timeout=30.0,
-    )
-    if resp.status_code != 200:
-        # Surface Metabase's actual error body instead of a bare HTTPStatusError.
-        raise RuntimeError(f"{resp.status_code} error from /api/dataset: {resp.text}")
-    return resp.json()
+        for part in clause:
+            extract_field_ids(part, ids)
+    return ids
 
 
-if __name__ == "__main__":
-    CARD_ID = 1  # <-- put your card's id here
-    DATABASE_ID = 1  # <-- from print_card_columns() output above
+async def validate_filter_fields(card_id: int, filter_clause: list[Any]) -> list[int]:
+    meta = await mb_get(f"/api/card/{card_id}/query_metadata")
+    allowed = {c["id"] for c in meta.get("columns", []) if c.get("id")}
+    used = extract_field_ids(filter_clause)
+    return [f for f in used if f not in allowed]
 
-    print_card_columns(CARD_ID)
 
-    # Example: only filter by month
-    result = query_trend_card(CARD_ID, DATABASE_ID, created_at_month="2024-05-01")
+# ---- Route ----
 
-    # Example: only filter by quantity
-    # result = query_trend_card(CARD_ID, DATABASE_ID, quantity_op=">", quantity_value=100)
+@router.post("/{card_id}/data")
+async def get_question_data(card_id: int, body: FilterRequest):
+    try:
+        if not body.filter:
+            return await mb_post(f"/api/card/{card_id}/query")
 
-    # Example: both, combined with AND
-    # result = query_trend_card(
-    #     CARD_ID, DATABASE_ID,
-    #     created_at_month="2024-05-01",
-    #     quantity_op=">", quantity_value=100,
-    # )
+        invalid_fields = await validate_filter_fields(card_id, body.filter)
+        if invalid_fields:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Filter references fields not on this question: {invalid_fields}"
+            )
 
-    print([c["name"] for c in result["data"]["cols"]])
-    for row in result["data"]["rows"][:10]:
-        print(row)
+        card = await mb_get(f"/api/card/{card_id}")
+
+        ad_hoc_query = {
+            "database": card["database_id"],
+            "type": "query",
+            "query": {
+                "source-table": f"card__{card_id}",
+                "filter": body.filter
+            }
+        }
+
+        return await mb_post("/api/dataset", ad_hoc_query)
+
+    except httpx.HTTPStatusError as e:
+        detail = e.response.json().get("message", str(e)) if e.response.content else str(e)
+        raise HTTPException(status_code=e.response.status_code, detail=detail)
